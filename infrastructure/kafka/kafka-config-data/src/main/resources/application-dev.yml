@@ -1,0 +1,54 @@
+spring:
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+          required-acks: 1
+      bindings:
+        # Payment Request
+        payment-request-output:
+          destination: payment-request
+          content-type: application/json
+        payment-request-input:
+          destination: payment-request
+          content-type: application/json
+          group: payment-request-group
+        
+        # Payment Response
+        payment-response-output:
+          destination: payment-response
+          content-type: application/json
+        payment-response-input:
+          destination: payment-response
+          content-type: application/json
+          group: payment-response-group
+        
+        # Restaurant Approval Request
+        restaurant-approval-request-output:
+          destination: restaurant-approval-request
+          content-type: application/json
+        restaurant-approval-request-input:
+          destination: restaurant-approval-request
+          content-type: application/json
+          group: restaurant-approval-request-group
+        
+        # Restaurant Approval Response
+        restaurant-approval-response-output:
+          destination: restaurant-approval-response
+          content-type: application/json
+        restaurant-approval-response-input:
+          destination: restaurant-approval-response
+          content-type: application/json
+          group: restaurant-approval-response-group
+
+kafka-stream-config:
+  bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+  payment-request-topic: payment-request
+  payment-response-topic: payment-response
+  restaurant-approval-request-topic: restaurant-approval-request
+  restaurant-approval-response-topic: restaurant-approval-response
+  num-of-partitions: 3
+  replication-factor: 1
+  auto-offset-reset: earliest
+  content-type: application/json

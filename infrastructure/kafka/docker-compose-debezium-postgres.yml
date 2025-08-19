@@ -1,0 +1,311 @@
+version: '3.8'
+
+services:
+  # Kafka Brokers with KRaft (No Zookeeper needed)
+  kafka-broker-1:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka-broker-1
+    hostname: kafka-broker-1
+    environment:
+      # KRaft Configuration
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka-broker-1:9093,2@kafka-broker-2:9093,3@kafka-broker-3:9093'
+      
+      # Listeners
+      KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093,PLAINTEXT_HOST://0.0.0.0:9094'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka-broker-1:9092,PLAINTEXT_HOST://localhost:19092'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      
+      # Storage
+      KAFKA_LOG_DIRS: '/var/lib/kafka/data'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      
+      # Performance
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+      KAFKA_MIN_INSYNC_REPLICAS: 2
+      
+      # Security (optional)
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_DELETE_TOPIC_ENABLE: 'true'
+      
+      # JMX
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: localhost
+    ports:
+      - "19092:9092"
+      - "19093:9093"
+      - "9101:9101"
+    volumes:
+      - kafka-broker-1-data:/var/lib/kafka/data
+    networks:
+      - kafka-network
+
+  kafka-broker-2:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka-broker-2
+    hostname: kafka-broker-2
+    environment:
+      # KRaft Configuration
+      KAFKA_NODE_ID: 2
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka-broker-1:9093,2@kafka-broker-2:9093,3@kafka-broker-3:9093'
+      
+      # Listeners
+      KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093,PLAINTEXT_HOST://0.0.0.0:9094'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka-broker-2:9092,PLAINTEXT_HOST://localhost:29092'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      
+      # Storage
+      KAFKA_LOG_DIRS: '/var/lib/kafka/data'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      
+      # Performance
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+      KAFKA_MIN_INSYNC_REPLICAS: 2
+      
+      # Security (optional)
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_DELETE_TOPIC_ENABLE: 'true'
+      
+      # JMX
+      KAFKA_JMX_PORT: 9102
+      KAFKA_JMX_HOSTNAME: localhost
+    ports:
+      - "29092:9092"
+      - "29093:9093"
+      - "9102:9102"
+    volumes:
+      - kafka-broker-2-data:/var/lib/kafka/data
+    networks:
+      - kafka-network
+
+  kafka-broker-3:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka-broker-3
+    hostname: kafka-broker-3
+    environment:
+      # KRaft Configuration
+      KAFKA_NODE_ID: 3
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka-broker-1:9093,2@kafka-broker-2:9093,3@kafka-broker-3:9093'
+      
+      # Listeners
+      KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093,PLAINTEXT_HOST://0.0.0.0:9094'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka-broker-3:9092,PLAINTEXT_HOST://localhost:39092'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      
+      # Storage
+      KAFKA_LOG_DIRS: '/var/lib/kafka/data'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      
+      # Performance
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+      KAFKA_MIN_INSYNC_REPLICAS: 2
+      
+      # Security (optional)
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_DELETE_TOPIC_ENABLE: 'true'
+      
+      # JMX
+      KAFKA_JMX_PORT: 9103
+      KAFKA_JMX_HOSTNAME: localhost
+    ports:
+      - "39092:9092"
+      - "39093:9093"
+      - "9103:9103"
+    volumes:
+      - kafka-broker-3-data:/var/lib/kafka/data
+    networks:
+      - kafka-network
+
+  # Schema Registry (Required for Debezium)
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.4.0
+    container_name: schema-registry
+    hostname: schema-registry
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka-broker-1:9092,kafka-broker-2:9092,kafka-broker-3:9092
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+      SCHEMA_REGISTRY_DEBUG: 'true'
+    ports:
+      - "8081:8081"
+    networks:
+      - kafka-network
+    depends_on:
+      - kafka-broker-1
+      - kafka-broker-2
+      - kafka-broker-3
+
+  # Debezium Connect (Kafka Connect with Debezium)
+  debezium-connect:
+    image: debezium/connect:2.4
+    container_name: debezium-connect
+    hostname: debezium-connect
+    environment:
+      GROUP_ID: 1
+      CONFIG_STORAGE_TOPIC: debezium_connect_configs
+      OFFSET_STORAGE_TOPIC: debezium_connect_offsets
+      STATUS_STORAGE_TOPIC: debezium_connect_statuses
+      BOOTSTRAP_SERVERS: kafka-broker-1:9092,kafka-broker-2:9092,kafka-broker-3:9092
+      KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+      KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+      VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      INTERNAL_KEY_CONVERTER_SCHEMAS_ENABLE: 'false'
+      INTERNAL_VALUE_CONVERTER_SCHEMAS_ENABLE: 'false'
+      OFFSET_FLUSH_INTERVAL_MS: 60000
+      CONNECT_LOG4J_ROOT_LOGLEVEL: INFO
+      CONNECT_LOG4J_LOGGERS: org.apache.kafka.connect.runtime.rest=WARN,org.reflections=ERROR
+    ports:
+      - "8083:8083"
+    volumes:
+      - debezium-connect-data:/kafka/data
+      - debezium-connect-config:/kafka/config
+    networks:
+      - kafka-network
+    depends_on:
+      - schema-registry
+
+  # PostgreSQL Database (Example for Debezium CDC)
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    hostname: postgres
+    environment:
+      POSTGRES_DB: inventory
+      POSTGRES_USER: debezium
+      POSTGRES_PASSWORD: dbz
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d
+    networks:
+      - kafka-network
+    command: >
+      postgres
+      -c wal_level=logical
+      -c max_wal_senders=1
+      -c max_replication_slots=1
+      -c wal_keep_size=64
+
+  # Kafka UI (Provectus Labs)
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-broker-1:9092,kafka-broker-2:9092,kafka-broker-3:9092
+      KAFKA_CLUSTERS_0_ZOOKEEPER: ''
+      KAFKA_CLUSTERS_0_READONLY: false
+      KAFKA_CLUSTERS_0_SCHEMAREGISTRY: http://schema-registry:8081
+    networks:
+      - kafka-network
+    depends_on:
+      - kafka-broker-1
+      - kafka-broker-2
+      - kafka-broker-3
+      - schema-registry
+
+  # Initialize Kafka Topics and Debezium Connectors
+  init-debezium-postgres:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: init-debezium-postgres
+    depends_on:
+      - kafka-broker-1
+      - kafka-broker-2
+      - kafka-broker-3
+      - schema-registry
+      - debezium-connect
+      - postgres
+    networks:
+      - kafka-network
+    command: >
+      bash -c "
+        echo 'Waiting for Kafka to be ready...'
+        cub kafka-ready -b kafka-broker-1:9092 1 30
+        cub kafka-ready -b kafka-broker-2:9092 1 30
+        cub kafka-ready -b kafka-broker-3:9092 1 30
+        
+        echo 'Waiting for Schema Registry...'
+        cub sr-ready schema-registry 8081 30
+        
+        echo 'Waiting for Debezium Connect...'
+        cub connect-ready debezium-connect 8083 30
+        
+        echo 'Creating topics...'
+        kafka-topics --create --if-not-exists --bootstrap-server kafka-broker-1:9092 --replication-factor 3 --partitions 3 --topic payment-request
+        kafka-topics --create --if-not-exists --bootstrap-server kafka-broker-1:9092 --replication-factor 3 --partitions 3 --topic payment-response
+        kafka-topics --create --if-not-exists --bootstrap-server kafka-broker-1:9092 --replication-factor 3 --partitions 3 --topic restaurant-approval-request
+        kafka-topics --create --if-not-exists --bootstrap-server kafka-broker-1:9092 --replication-factor 3 --partitions 3 --topic restaurant-approval-response
+        
+        echo 'Waiting for PostgreSQL to be ready...'
+        sleep 30
+        
+        echo 'Creating Debezium PostgreSQL Connector...'
+        curl -X POST http://debezium-connect:8083/connectors \
+          -H 'Content-Type: application/json' \
+          -d '{
+            \"name\": \"postgres-connector\",
+            \"config\": {
+              \"connector.class\": \"io.debezium.connector.postgresql.PostgresConnector\",
+              \"tasks.max\": \"1\",
+              \"database.hostname\": \"postgres\",
+              \"database.port\": \"5432\",
+              \"database.user\": \"debezium\",
+              \"database.password\": \"dbz\",
+              \"database.dbname\": \"inventory\",
+              \"database.server.name\": \"postgres-server\",
+              \"database.include.list\": \"inventory\",
+              \"database.history.kafka.bootstrap.servers\": \"kafka-broker-1:9092,kafka-broker-2:9092,kafka-broker-3:9092\",
+              \"database.history.kafka.topic\": \"schema-changes.inventory\",
+              \"include.schema.changes\": \"true\",
+              \"transforms\": \"unwrap\",
+              \"transforms.unwrap.type\": \"io.debezium.transforms.ExtractNewDocumentState\",
+              \"transforms.unwrap.drop.tombstones\": \"false\",
+              \"transforms.unwrap.delete.handling.mode\": \"rewrite\",
+              \"transforms.unwrap.operation.header\": \"true\",
+              \"plugin.name\": \"pgoutput\"
+            }
+          }'
+        
+        echo 'Topics and connectors created successfully!'
+        kafka-topics --list --bootstrap-server kafka-broker-1:9092
+      "
+
+volumes:
+  kafka-broker-1-data:
+    driver: local
+  kafka-broker-2-data:
+    driver: local
+  kafka-broker-3-data:
+    driver: local
+  debezium-connect-data:
+    driver: local
+  debezium-connect-config:
+    driver: local
+  postgres-data:
+    driver: local
+
+networks:
+  kafka-network:
+    driver: bridge
