@@ -11,10 +11,11 @@ services:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: 'broker,controller'
       KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka-broker-1:9093,2@kafka-broker-2:9093,3@kafka-broker-3:9093'
+      CLUSTER_ID: '4L6g3nShT-eMCtK--X86sw'
       
       # Listeners
-      KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093,PLAINTEXT_HOST://0.0.0.0:9094'
-      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka-broker-1:9092,PLAINTEXT_HOST://localhost:19092'
+      KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka-broker-1:9092'
       KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
       KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
       
@@ -49,10 +50,11 @@ services:
       KAFKA_NODE_ID: 2
       KAFKA_PROCESS_ROLES: 'broker,controller'
       KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka-broker-1:9093,2@kafka-broker-2:9093,3@kafka-broker-3:9093'
+      CLUSTER_ID: '4L6g3nShT-eMCtK--X86sw'
       
       # Listeners
-      KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093,PLAINTEXT_HOST://0.0.0.0:9094'
-      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka-broker-2:9092,PLAINTEXT_HOST://localhost:29092'
+      KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka-broker-2:9092'
       KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
       KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
       
@@ -87,10 +89,11 @@ services:
       KAFKA_NODE_ID: 3
       KAFKA_PROCESS_ROLES: 'broker,controller'
       KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka-broker-1:9093,2@kafka-broker-2:9093,3@kafka-broker-3:9093'
+      CLUSTER_ID: '4L6g3nShT-eMCtK--X86sw'
       
       # Listeners
-      KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093,PLAINTEXT_HOST://0.0.0.0:9094'
-      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka-broker-3:9092,PLAINTEXT_HOST://localhost:39092'
+      KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka-broker-3:9092'
       KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
       KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
       
@@ -126,7 +129,7 @@ services:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-broker-1:9092,kafka-broker-2:9092,kafka-broker-3:9092
       KAFKA_CLUSTERS_0_ZOOKEEPER: ''
-      KAFKA_CLUSTERS_0_READONLY: false
+      KAFKA_CLUSTERS_0_READONLY: 'false'
     networks:
       - kafka-network
     depends_on:
@@ -142,6 +145,14 @@ services:
       - kafka-broker-1
       - kafka-broker-2
       - kafka-broker-3
+    environment:
+      # Disable file logging to avoid permission errors
+      KAFKA_LOG4J_ROOTLOGGER: "INFO, stdout"
+      KAFKA_LOG4J_APPENDERS: "stdout"
+      KAFKA_LOG4J_APPENDER_STDOUT_LAYOUT: "org.apache.log4j.PatternLayout"
+      KAFKA_LOG4J_APPENDER_STDOUT_LAYOUT_CONVERSIONPATTERN: "[%d] %p %m (%c)%n"
+      # Disable specific file appenders that cause permission errors
+      KAFKA_LOG4J_LOGGERS: "org.apache.kafka.clients.NetworkClient=WARN, kafka.producer.async.DefaultEventHandler=DEBUG, state.change.logger=INFO"
     networks:
       - kafka-network
     command: >
@@ -172,7 +183,6 @@ services:
       POSTGRES_DB: postgres
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      - ./init-scripts:/docker-entrypoint-initdb.d
     networks:
       - kafka-network
     healthcheck:
@@ -191,7 +201,6 @@ volumes:
   postgres-data:
     driver: local
 
-    
 networks:
   kafka-network:
     driver: bridge
