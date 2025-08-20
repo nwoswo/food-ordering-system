@@ -1,6 +1,11 @@
 server:
   port: 8184
 
+logging:
+  level:
+    com.food.ordering.system: DEBUG
+    org.flywaydb: DEBUG
+
 spring:
   jpa:
     open-in-view: false
@@ -20,3 +25,6 @@ spring:
     enabled: true
     locations: classpath:db
     baseline-on-migrate: true
+    schemas: customer
+    default-schema: customer
+    create-schemas: true
