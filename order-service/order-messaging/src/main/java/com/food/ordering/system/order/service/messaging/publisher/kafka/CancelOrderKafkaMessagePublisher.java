@@ -4,7 +4,7 @@ package com.food.ordering.system.order.service.messaging.publisher.kafka;
 import com.food.ordering.system.kafka.stream.model.PaymentRequestModel;
 import com.food.ordering.system.kafka.producer.KafkaMessageHelper;
 import com.food.ordering.system.kafka.producer.KafkaProducer;
-import com.food.ordering.system.order.service.domain.config.OrderServiceConfigData;
+import com.food.ordering.system.order.service.application.config.OrderServiceConfigData;
 import com.food.ordering.system.order.service.domain.event.OrderCancelledEvent;
 import com.food.ordering.system.order.service.domain.ports.output.message.publisher.payment.OrderCancelledPaymentRequestMessagePublisher;
 import com.food.ordering.system.order.service.messaging.mapper.OrderMessagingDataMapper;

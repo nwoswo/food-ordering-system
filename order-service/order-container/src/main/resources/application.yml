@@ -24,12 +24,24 @@ spring:
     username: postgres
     password: admin
     driver-class-name: org.postgresql.Driver
+  kafka:
+    bootstrap-servers: localhost:19092, localhost:29092, localhost:39092
+    topic:
+      payment-request: payment-request
+      payment-response: payment-response
+      restaurant-approval-request: restaurant-approval-request
+      restaurant-approval-response: restaurant-approval-response
+    consumer:
+      group-id: order-service-consumer
 
   ##Flyway
   flyway:
     enabled: true
     locations: classpath:db
     baseline-on-migrate: true
+    schemas: order
+    default-schema: order
+    create-schemas: true
 
 
 kafka-config:

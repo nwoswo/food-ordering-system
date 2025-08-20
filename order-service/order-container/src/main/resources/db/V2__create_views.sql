@@ -1,0 +1,34 @@
+---- Create customer schema and view
+--CREATE SCHEMA IF NOT EXISTS "customer";
+--
+---- Drop existing objects if they exist (handle all possible object types)
+--DROP MATERIALIZED VIEW IF EXISTS "customer".order_customer_m_view CASCADE;
+--DROP VIEW IF EXISTS "customer".order_customer_m_view CASCADE;
+--DROP TABLE IF EXISTS "customer".order_customer_m_view CASCADE;
+--
+---- Create a simple view with test data
+--CREATE VIEW "customer".order_customer_m_view AS
+--SELECT
+--    'd215b5f8-0249-4dc5-89a3-51fd148cfb41'::uuid as id,
+--    'd215b5f8-0249-4dc5-89a3-51fd148cfb41'::uuid as customer_id,
+--    'John Doe' as customer_name,
+--    'john.doe@example.com' as customer_email;
+--
+---- Create restaurant schema and view
+--CREATE SCHEMA IF NOT EXISTS "restaurant";
+--
+---- Drop existing objects if they exist (handle all possible object types)
+--DROP MATERIALIZED VIEW IF EXISTS "restaurant".order_restaurant_m_view CASCADE;
+--DROP VIEW IF EXISTS "restaurant".order_restaurant_m_view CASCADE;
+--DROP TABLE IF EXISTS "restaurant".order_restaurant_m_view CASCADE;
+--
+---- Create a simple view with test data
+--CREATE VIEW "restaurant".order_restaurant_m_view AS
+--SELECT
+--    'd215b5f8-0249-4dc5-89a3-51fd148cfb48'::uuid as product_id,
+--    'd215b5f8-0249-4dc5-89a3-51fd148cfb45'::uuid as restaurant_id,
+--    'Sample Restaurant' as restaurant_name,
+--    true as restaurant_active,
+--    'Sample Product' as product_name,
+--    true as product_available,
+--    25.00 as product_price;

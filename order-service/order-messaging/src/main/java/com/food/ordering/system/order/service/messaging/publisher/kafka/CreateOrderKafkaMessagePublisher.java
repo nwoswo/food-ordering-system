@@ -1,43 +1,45 @@
 package com.food.ordering.system.order.service.messaging.publisher.kafka;
 
-import com.food.ordering.system.kafka.stream.model.PaymentRequestModel;
-import com.food.ordering.system.kafka.producer.KafkaMessageHelper;
-import com.food.ordering.system.kafka.producer.KafkaProducer;
-import com.food.ordering.system.order.service.application.config.OrderServiceConfigData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-import java.util.UUID;
+import com.food.ordering.system.kafka.producer.KafkaMessageHelper;
+import com.food.ordering.system.kafka.producer.KafkaProducer;
+import com.food.ordering.system.kafka.stream.model.PaymentRequestModel;
+import com.food.ordering.system.order.service.application.config.OrderServiceConfigData;
+import com.food.ordering.system.order.service.domain.event.OrderCreatedEvent;
+import com.food.ordering.system.order.service.domain.ports.output.message.publisher.payment.OrderCreatedPaymentRequestMessagePublisher;
+import com.food.ordering.system.order.service.messaging.mapper.OrderMessagingDataMapper;
 
 @Component
-public class CreateOrderKafkaMessagePublisher {
-    
-    private static final Logger log = LoggerFactory.getLogger(CreateOrderKafkaMessagePublisher.class);
+public class CreateOrderKafkaMessagePublisher implements OrderCreatedPaymentRequestMessagePublisher {
 
+    private static final Logger log = LoggerFactory.getLogger(CreateOrderKafkaMessagePublisher.class);
+    
+    private final OrderMessagingDataMapper orderMessagingDataMapper;
     private final OrderServiceConfigData orderServiceConfigData;
     private final KafkaProducer<String, PaymentRequestModel> kafkaProducer;
-    private final KafkaMessageHelper orderKafkaMessageHelper;
+    private final KafkaMessageHelper<String, PaymentRequestModel> orderKafkaMessageHelper;
 
-    public CreateOrderKafkaMessagePublisher(OrderServiceConfigData orderServiceConfigData,
+    public CreateOrderKafkaMessagePublisher(OrderMessagingDataMapper orderMessagingDataMapper,
+                                            OrderServiceConfigData orderServiceConfigData,
                                             KafkaProducer<String, PaymentRequestModel> kafkaProducer,
-                                            KafkaMessageHelper kafkaMessageHelper) {
+                                            KafkaMessageHelper<String, PaymentRequestModel> orderKafkaMessageHelper) {
+        this.orderMessagingDataMapper = orderMessagingDataMapper;
         this.orderServiceConfigData = orderServiceConfigData;
         this.kafkaProducer = kafkaProducer;
-        this.orderKafkaMessageHelper = kafkaMessageHelper;
+        this.orderKafkaMessageHelper = orderKafkaMessageHelper;
     }
 
-    public void publish(String orderId, String customerId, BigDecimal price) {
-        log.info("Publishing order creation event for order id: {}", orderId);
+    @Override
+    public void publish(OrderCreatedEvent domainEvent) {
+        String orderId = domainEvent.getOrder().getId().getValue().toString();
+        log.info("Received OrderCreatedEvent for order id: {}", orderId);
 
         try {
-            PaymentRequestModel paymentRequestModel = PaymentRequestModel.createPaymentRequest(
-                    UUID.randomUUID().toString(), // sagaId
-                    customerId,
-                    orderId,
-                    price
-            );
+            PaymentRequestModel paymentRequestModel = orderMessagingDataMapper
+                    .orderCreatedEventToPaymentRequestModel(domainEvent);
 
             kafkaProducer.send(orderServiceConfigData.getPaymentRequestTopicName(),
                     orderId,
@@ -46,8 +48,9 @@ public class CreateOrderKafkaMessagePublisher {
 
             log.info("PaymentRequestModel sent to Kafka for order id: {}", paymentRequestModel.getOrderId());
         } catch (Exception e) {
-           log.error("Error while sending PaymentRequestModel message" +
-                   " to kafka with order id: {}, error: {}", orderId, e.getMessage());
+            log.error("Error while sending PaymentRequestModel message" +
+                    " to kafka with order id: {}, error: {}", orderId, e.getMessage());
         }
     }
+
 }

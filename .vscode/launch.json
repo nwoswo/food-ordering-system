@@ -9,6 +9,16 @@
       "projectName": "customer-service",
       "args": "",
       "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-OrderServiceApplication<order-container>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.food.ordering.system.order.service.domain.OrderServiceApplication",
+      "projectName": "order-container",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
     }
   ]
 }

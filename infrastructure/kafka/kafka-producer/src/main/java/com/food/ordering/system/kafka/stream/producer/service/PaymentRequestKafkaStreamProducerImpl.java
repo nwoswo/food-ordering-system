@@ -7,7 +7,7 @@ import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
 
 @Slf4j
-@Service
+//@Service
 public class PaymentRequestKafkaStreamProducerImpl implements PaymentRequestKafkaStreamProducer {
 
     private final StreamBridge streamBridge;

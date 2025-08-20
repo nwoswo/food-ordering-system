@@ -48,5 +48,6 @@
     "activityBarBadge.background": "#da077b"
   },
   "projectColors.mainColor": "#da077b",
-  "window.title": "d:\\nwo-desarrollo\\java\\workspace_hexagonal\\food-ordering-system"
+  "window.title": "d:\\nwo-desarrollo\\java\\workspace_hexagonal\\food-ordering-system",
+  "java.compile.nullAnalysis.mode": "automatic"
 }

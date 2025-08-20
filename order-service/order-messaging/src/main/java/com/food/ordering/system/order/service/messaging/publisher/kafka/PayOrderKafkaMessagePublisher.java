@@ -3,7 +3,7 @@ package com.food.ordering.system.order.service.messaging.publisher.kafka;
 import com.food.ordering.system.kafka.stream.model.RestaurantApprovalRequestModel;
 import com.food.ordering.system.kafka.producer.KafkaMessageHelper;
 import com.food.ordering.system.kafka.producer.KafkaProducer;
-import com.food.ordering.system.order.service.domain.config.OrderServiceConfigData;
+import com.food.ordering.system.order.service.application.config.OrderServiceConfigData;
 import com.food.ordering.system.order.service.domain.event.OrderPaidEvent;
 import com.food.ordering.system.order.service.domain.ports.output.message.publisher.restaurantapproval.OrderPaidRestaurantRequestMessagePublisher;
 import com.food.ordering.system.order.service.messaging.mapper.OrderMessagingDataMapper;

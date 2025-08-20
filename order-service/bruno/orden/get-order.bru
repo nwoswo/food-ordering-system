@@ -1,0 +1,15 @@
+meta {
+  name: Get Order by Tracking ID
+  type: http
+  seq: NaN
+}
+
+get {
+  url: http://localhost:8181/orders/{{orderTrackingId}}
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
