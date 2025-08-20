@@ -23,6 +23,12 @@
             <artifactId>kafka-config-data</artifactId>
         </dependency>
         
+        <!-- Spring Kafka Dependencies -->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+        
         <!-- Spring Cloud Stream Dependencies -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

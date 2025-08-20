@@ -1,7 +1,7 @@
 package com.food.ordering.system.kafka.stream.producer;
 
-import com.food.ordering.system.kafka.stream.model.PaymentResponseAvroModel;
+import com.food.ordering.system.kafka.stream.model.PaymentResponseModel;
 
 public interface PaymentResponseKafkaStreamProducer {
-    void send(String topicName, String key, PaymentResponseAvroModel message);
+    void send(String topicName, String key, PaymentResponseModel message);
 }

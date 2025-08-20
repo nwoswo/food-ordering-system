@@ -1,7 +1,7 @@
 package com.food.ordering.system.kafka.stream.producer.service;
 
 import com.food.ordering.system.kafka.stream.producer.PaymentRequestKafkaStreamProducer;
-import com.food.ordering.system.kafka.stream.model.PaymentRequestAvroModel;
+import com.food.ordering.system.kafka.stream.model.PaymentRequestModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ public class PaymentRequestKafkaStreamProducerImpl implements PaymentRequestKafk
     }
 
     @Override
-    public void send(String topicName, String key, PaymentRequestAvroModel message) {
+    public void send(String topicName, String key, PaymentRequestModel message) {
         log.info("Sending payment request to topic: {} with key: {}, message: {}", topicName, key, message);
         
         try {

@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -15,7 +14,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentResponseAvroModel {
+public class RestaurantApprovalResponseModel {
     
     @JsonProperty("id")
     private UUID id;
@@ -23,43 +22,35 @@ public class PaymentResponseAvroModel {
     @JsonProperty("sagaId")
     private UUID sagaId;
     
-    @JsonProperty("paymentId")
-    private UUID paymentId;
-    
-    @JsonProperty("customerId")
-    private UUID customerId;
+    @JsonProperty("restaurantId")
+    private UUID restaurantId;
     
     @JsonProperty("orderId")
     private UUID orderId;
     
-    @JsonProperty("price")
-    private BigDecimal price;
-    
     @JsonProperty("createdAt")
     private Instant createdAt;
     
-    @JsonProperty("paymentStatus")
-    private PaymentStatus paymentStatus;
+    @JsonProperty("orderApprovalStatus")
+    private OrderApprovalStatus orderApprovalStatus;
     
     @JsonProperty("failureMessages")
     private List<String> failureMessages;
     
-    public enum PaymentStatus {
-        COMPLETED, CANCELLED, FAILED
+    public enum OrderApprovalStatus {
+        APPROVED, REJECTED
     }
     
-    public static PaymentResponseAvroModel createPaymentResponse(
-            UUID sagaId, UUID paymentId, UUID customerId, UUID orderId, 
-            BigDecimal price, PaymentStatus paymentStatus, List<String> failureMessages) {
-        return PaymentResponseAvroModel.builder()
+    public static RestaurantApprovalResponseModel createRestaurantApprovalResponse(
+            UUID sagaId, UUID restaurantId, UUID orderId, 
+            OrderApprovalStatus orderApprovalStatus, List<String> failureMessages) {
+        return RestaurantApprovalResponseModel.builder()
                 .id(UUID.randomUUID())
                 .sagaId(sagaId)
-                .paymentId(paymentId)
-                .customerId(customerId)
+                .restaurantId(restaurantId)
                 .orderId(orderId)
-                .price(price)
                 .createdAt(Instant.now())
-                .paymentStatus(paymentStatus)
+                .orderApprovalStatus(orderApprovalStatus)
                 .failureMessages(failureMessages)
                 .build();
     }

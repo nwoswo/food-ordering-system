@@ -1,8 +1,8 @@
 package com.food.ordering.system.order.service.messaging.publisher.kafka;
 
-import com.food.ordering.system.kafka.order.avro.model.RestaurantApprovalRequestAvroModel;
+import com.food.ordering.system.kafka.stream.model.RestaurantApprovalRequestModel;
 import com.food.ordering.system.kafka.producer.KafkaMessageHelper;
-import com.food.ordering.system.kafka.producer.service.KafkaProducer;
+import com.food.ordering.system.kafka.producer.KafkaProducer;
 import com.food.ordering.system.order.service.domain.config.OrderServiceConfigData;
 import com.food.ordering.system.order.service.domain.event.OrderPaidEvent;
 import com.food.ordering.system.order.service.domain.ports.output.message.publisher.restaurantapproval.OrderPaidRestaurantRequestMessagePublisher;
@@ -16,12 +16,12 @@ public class PayOrderKafkaMessagePublisher implements OrderPaidRestaurantRequest
 
     private final OrderMessagingDataMapper orderMessagingDataMapper;
     private final OrderServiceConfigData orderServiceConfigData;
-    private final KafkaProducer<String, RestaurantApprovalRequestAvroModel> kafkaProducer;
+    private final KafkaProducer<String, RestaurantApprovalRequestModel> kafkaProducer;
     private final KafkaMessageHelper orderKafkaMessageHelper;
 
     public PayOrderKafkaMessagePublisher(OrderMessagingDataMapper orderMessagingDataMapper,
                                          OrderServiceConfigData orderServiceConfigData,
-                                         KafkaProducer<String, RestaurantApprovalRequestAvroModel> kafkaProducer,
+                                         KafkaProducer<String, RestaurantApprovalRequestModel> kafkaProducer,
                                          KafkaMessageHelper orderKafkaMessageHelper) {
         this.orderMessagingDataMapper = orderMessagingDataMapper;
         this.orderServiceConfigData = orderServiceConfigData;
@@ -34,21 +34,21 @@ public class PayOrderKafkaMessagePublisher implements OrderPaidRestaurantRequest
         String orderId = domainEvent.getOrder().getId().getValue().toString();
 
         try {
-            RestaurantApprovalRequestAvroModel restaurantApprovalRequestAvroModel =
-                    orderMessagingDataMapper.orderPaidEventToRestaurantApprovalRequestAvroModel(domainEvent);
+            RestaurantApprovalRequestModel restaurantApprovalRequestModel =
+                    orderMessagingDataMapper.orderPaidEventToRestaurantApprovalRequestModel(domainEvent);
 
             kafkaProducer.send(orderServiceConfigData.getRestaurantApprovalRequestTopicName(),
                     orderId,
-                    restaurantApprovalRequestAvroModel,
+                    restaurantApprovalRequestModel,
                     orderKafkaMessageHelper
                             .getKafkaCallback(orderServiceConfigData.getRestaurantApprovalRequestTopicName(),
-                                    restaurantApprovalRequestAvroModel,
+                                    restaurantApprovalRequestModel,
                                     orderId,
-                                    "RestaurantApprovalRequestAvroModel"));
+                                    "RestaurantApprovalRequestModel"));
 
-            log.info("RestaurantApprovalRequestAvroModel sent to kafka for order id: {}", orderId);
+            log.info("RestaurantApprovalRequestModel sent to kafka for order id: {}", orderId);
         } catch (Exception e) {
-            log.error("Error while sending RestaurantApprovalRequestAvroModel message" +
+            log.error("Error while sending RestaurantApprovalRequestModel message" +
                     " to kafka with order id: {}, error: {}", orderId, e.getMessage());
         }
     }

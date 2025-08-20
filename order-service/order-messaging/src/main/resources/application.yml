@@ -1,0 +1,12 @@
+order-service:
+  payment-request-topic-name: payment-request-topic
+  payment-response-topic-name: payment-response-topic
+  restaurant-approval-request-topic-name: restaurant-approval-request-topic
+  restaurant-approval-response-topic-name: restaurant-approval-response-topic
+  order-created-topic-name: order-created-topic
+  order-cancelled-topic-name: order-cancelled-topic
+  order-paid-topic-name: order-paid-topic
+
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092

@@ -8,13 +8,14 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentRequestAvroModel {
+public class RestaurantApprovalRequestModel {
     
     @JsonProperty("id")
     private UUID id;
@@ -22,11 +23,17 @@ public class PaymentRequestAvroModel {
     @JsonProperty("sagaId")
     private UUID sagaId;
     
-    @JsonProperty("customerId")
-    private UUID customerId;
+    @JsonProperty("restaurantId")
+    private UUID restaurantId;
     
     @JsonProperty("orderId")
     private UUID orderId;
+    
+    @JsonProperty("restaurantOrderStatus")
+    private RestaurantOrderStatus restaurantOrderStatus;
+    
+    @JsonProperty("products")
+    private List<Product> products;
     
     @JsonProperty("price")
     private BigDecimal price;
@@ -34,23 +41,22 @@ public class PaymentRequestAvroModel {
     @JsonProperty("createdAt")
     private Instant createdAt;
     
-    @JsonProperty("paymentOrderStatus")
-    private PaymentOrderStatus paymentOrderStatus;
-    
-    public enum PaymentOrderStatus {
-        PENDING, CANCELLED
+    public enum RestaurantOrderStatus {
+        PAID
     }
     
-    public static PaymentRequestAvroModel createPaymentRequest(
-            UUID sagaId, UUID customerId, UUID orderId, BigDecimal price) {
-        return PaymentRequestAvroModel.builder()
+    public static RestaurantApprovalRequestModel createRestaurantApprovalRequest(
+            UUID sagaId, UUID restaurantId, UUID orderId, 
+            RestaurantOrderStatus restaurantOrderStatus, List<Product> products, BigDecimal price) {
+        return RestaurantApprovalRequestModel.builder()
                 .id(UUID.randomUUID())
                 .sagaId(sagaId)
-                .customerId(customerId)
+                .restaurantId(restaurantId)
                 .orderId(orderId)
+                .restaurantOrderStatus(restaurantOrderStatus)
+                .products(products)
                 .price(price)
                 .createdAt(Instant.now())
-                .paymentOrderStatus(PaymentOrderStatus.PENDING)
                 .build();
     }
 }

@@ -1,7 +1,7 @@
 package com.food.ordering.system.kafka.stream.consumer.listener;
 
 import com.food.ordering.system.kafka.stream.consumer.PaymentRequestKafkaStreamConsumer;
-import com.food.ordering.system.kafka.stream.model.PaymentRequestAvroModel;
+import com.food.ordering.system.kafka.stream.model.PaymentRequestModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -15,10 +15,10 @@ public class PaymentRequestKafkaStreamConsumerImpl implements PaymentRequestKafk
 
     @Override
     @KafkaListener(topics = "${spring.kafka.topic.payment-request}", groupId = "${spring.kafka.consumer.group-id}")
-    public void receive(@Payload List<PaymentRequestAvroModel> messages) {
+    public void receive(@Payload List<PaymentRequestModel> messages) {
         log.info("Received {} payment request messages from Kafka", messages.size());
         
-        for (PaymentRequestAvroModel message : messages) {
+        for (PaymentRequestModel message : messages) {
             log.info("Processing payment request: {}", message);
             
             // Process the payment request
@@ -26,7 +26,7 @@ public class PaymentRequestKafkaStreamConsumerImpl implements PaymentRequestKafk
         }
     }
     
-    private void processPaymentRequest(PaymentRequestAvroModel paymentRequest) {
+    private void processPaymentRequest(PaymentRequestModel paymentRequest) {
         log.info("Processing payment request: {}", paymentRequest.getId());
         
         switch (paymentRequest.getPaymentOrderStatus()) {
