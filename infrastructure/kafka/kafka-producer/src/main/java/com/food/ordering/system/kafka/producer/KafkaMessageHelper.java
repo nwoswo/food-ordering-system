@@ -8,5 +8,5 @@ import java.util.function.BiConsumer;
 
 public interface KafkaMessageHelper<K, V> {
     ProducerRecord<String, V> getProducerRecord(String topicName, K key, V message, String orderId);
-    BiConsumer<SendResult<String, V>, Throwable> getKafkaCallback(String topicName, V avroModel, K orderId, String avroModelName);
+    BiConsumer<SendResult<String, V>, Throwable> getKafkaCallback(String topicName, V message, K orderId, String messageName);
 }

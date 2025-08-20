@@ -24,9 +24,13 @@ spring:
     username: postgres
     password: admin
     driver-class-name: org.postgresql.Driver
-    platform: postgres
-    schema: classpath:init-schema.sql
-    initialization-mode: always
+
+  ##Flyway
+  flyway:
+    enabled: true
+    locations: classpath:db
+    baseline-on-migrate: true
+
 
 kafka-config:
   bootstrap-servers: localhost:19092, localhost:29092, localhost:39092
@@ -37,7 +41,7 @@ kafka-config:
 
 kafka-producer-config:
   key-serializer-class: org.apache.kafka.common.serialization.StringSerializer
-  value-serializer-class: io.confluent.kafka.serializers.KafkaAvroSerializer
+  value-serializer-class: org.springframework.kafka.support.serializer.JsonSerializer
   compression-type: snappy
   acks: all
   batch-size: 16384
@@ -48,12 +52,10 @@ kafka-producer-config:
 
 kafka-consumer-config:
   key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-  value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+  value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
   payment-consumer-group-id: payment-topic-consumer
   restaurant-approval-consumer-group-id: restaurant-approval-topic-consumer
   auto-offset-reset: earliest
-  specific-avro-reader-key: specific.avro.reader
-  specific-avro-reader: true
   batch-listener: true
   auto-startup: true
   concurrency-level: 3

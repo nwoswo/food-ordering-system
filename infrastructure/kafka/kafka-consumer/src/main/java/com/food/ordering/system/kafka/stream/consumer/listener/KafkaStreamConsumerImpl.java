@@ -11,7 +11,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class KafkaStreamConsumerImpl implements KafkaStreamConsumer {
+public class KafkaStreamConsumerImpl implements KafkaStreamConsumer<PaymentRequestModel> {
 
     @Override
     @KafkaListener(topics = "${spring.kafka.topic.payment-request}", groupId = "${spring.kafka.consumer.group-id}")

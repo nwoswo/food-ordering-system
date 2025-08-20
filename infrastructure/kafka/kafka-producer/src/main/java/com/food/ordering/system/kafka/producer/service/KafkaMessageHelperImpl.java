@@ -18,14 +18,14 @@ public class KafkaMessageHelperImpl<K, V> implements KafkaMessageHelper<K, V> {
     }
 
     @Override
-    public BiConsumer<SendResult<String, V>, Throwable> getKafkaCallback(String topicName, V avroModel, K orderId, String avroModelName) {
+    public BiConsumer<SendResult<String, V>, Throwable> getKafkaCallback(String topicName, V message, K orderId, String messageName) {
         return (result, throwable) -> {
             if (throwable == null) {
                 log.info("Message sent successfully to topic: {} with key: {} and {}: {}", 
-                    topicName, orderId, avroModelName, avroModel);
+                    topicName, orderId, messageName, message);
             } else {
                 log.error("Error while sending {} message to topic: {} with key: {}, error: {}", 
-                    avroModelName, topicName, orderId, throwable.getMessage());
+                    messageName, topicName, orderId, throwable.getMessage());
             }
         };
     }

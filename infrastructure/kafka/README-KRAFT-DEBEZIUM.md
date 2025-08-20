@@ -45,7 +45,7 @@ Este proyecto implementa un cluster de **Kafka con KRaft** (sin Zookeeper) integ
 ### ✅ **Debezium CDC**
 - **Change Data Capture**: Captura cambios en tiempo real
 - **PostgreSQL**: Soporte nativo para PostgreSQL
-- **Avro**: Serialización con Schema Registry
+- **JSON**: Serialización con JSON
 - **Transformaciones**: Unwrapping de eventos CDC
 
 ### ✅ **PostgreSQL**
@@ -226,13 +226,13 @@ docker exec -it kafka-broker-1 kafka-console-consumer \
   - Ver topics y particiones
   - Consumir mensajes en tiempo real
   - Monitorear consumer groups
-  - Ver schemas de Avro
+  - Ver mensajes JSON
 
 ### Schema Registry
 - **URL**: http://localhost:8081
 - **API**: http://localhost:8081/subjects
 - **Funcionalidades**:
-  - Gestionar schemas Avro
+  - Gestionar schemas JSON
   - Versionado de schemas
   - Compatibilidad de schemas
 

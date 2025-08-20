@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Component
 public class OrderMessagingDataMapper {
 
-    public PaymentRequestModel orderCreatedEventToPaymentRequestAvroModel(OrderCreatedEvent orderCreatedEvent) {
+    public PaymentRequestModel orderCreatedEventToPaymentRequestModel(OrderCreatedEvent orderCreatedEvent) {
         Order order = orderCreatedEvent.getOrder();
         return PaymentRequestModel.createPaymentRequest(
                 UUID.randomUUID().toString(), // sagaId
@@ -29,7 +29,7 @@ public class OrderMessagingDataMapper {
         );
     }
 
-    public PaymentRequestModel orderCancelledEventToPaymentRequestAvroModel(OrderCancelledEvent orderCancelledEvent) {
+    public PaymentRequestModel orderCancelledEventToPaymentRequestModel(OrderCancelledEvent orderCancelledEvent) {
         Order order = orderCancelledEvent.getOrder();
         PaymentRequestModel model = PaymentRequestModel.createPaymentRequest(
                 UUID.randomUUID().toString(), // sagaId

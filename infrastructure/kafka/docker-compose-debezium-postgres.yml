@@ -161,10 +161,8 @@ services:
       OFFSET_STORAGE_TOPIC: debezium_connect_offsets
       STATUS_STORAGE_TOPIC: debezium_connect_statuses
       BOOTSTRAP_SERVERS: kafka-broker-1:9092,kafka-broker-2:9092,kafka-broker-3:9092
-      KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
-      KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
-      VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
-      VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       INTERNAL_KEY_CONVERTER_SCHEMAS_ENABLE: 'false'
