@@ -36,14 +36,14 @@ public class PaymentResponseKafkaListener implements KafkaStreamConsumer<Payment
 
     @KafkaListener(id = "${kafka-consumer-config.payment-consumer-group-id}", topics = "${order-service.payment-response-topic-name}")
     public void receive(@Payload List<PaymentResponseModel> messages,
-                        @Header(KafkaHeaders.KEY) List<String> keys,
-                        @Header(KafkaHeaders.PARTITION) List<Integer> partitions,
-                        @Header(KafkaHeaders.OFFSET) List<Long> offsets) {
+                        @Header(value = KafkaHeaders.KEY, required = false) List<String> keys,
+                        @Header(value = KafkaHeaders.PARTITION, required = false) List<Integer> partitions,
+                        @Header(value = KafkaHeaders.OFFSET, required = false) List<Long> offsets) {
         log.info("{} number of payment responses received with keys:{}, partitions:{} and offsets: {}",
                 messages.size(),
-                keys.toString(),
-                partitions.toString(),
-                offsets.toString());
+                keys != null ? keys.toString() : "null",
+                partitions != null ? partitions.toString() : "null",
+                offsets != null ? offsets.toString() : "null");
 
         messages.forEach(paymentResponseModel -> {
             if (PaymentResponseModel.PaymentStatus.COMPLETED == paymentResponseModel.getPaymentStatus()) {

@@ -30,6 +30,13 @@ spring:
       payment-response: payment-response
     consumer:
       group-id: payment-service-consumer
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.use.type.headers: false
+        spring.json.value.default.type: com.food.ordering.system.kafka.stream.model.PaymentRequestModel
 
   ##Flyway
   flyway:
@@ -59,8 +66,6 @@ kafka-producer-config:
   retry-count: 5
 
 kafka-consumer-config:
-  key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-  value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
   payment-consumer-group-id: payment-topic-consumer
   auto-offset-reset: earliest
   batch-listener: true
