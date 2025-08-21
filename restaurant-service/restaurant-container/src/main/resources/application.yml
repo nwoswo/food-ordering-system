@@ -22,10 +22,22 @@ spring:
     username: postgres
     password: admin
     driver-class-name: org.postgresql.Driver
-    platform: postgres
-    schema: classpath:init-schema.sql
-    data: classpath:init-data.sql
-    initialization-mode: always
+  kafka:
+    bootstrap-servers: localhost:19092, localhost:29092, localhost:39092
+    topic:
+      restaurant-approval-request: restaurant-approval-request
+      restaurant-approval-response: restaurant-approval-response
+    consumer:
+      group-id: restaurant-service-consumer
+
+  ##Flyway
+  flyway:
+    enabled: true
+    locations: classpath:bd
+    baseline-on-migrate: true
+    schemas: restaurant
+    default-schema: restaurant
+    create-schemas: true
 
 kafka-config:
   bootstrap-servers: localhost:19092, localhost:29092, localhost:39092

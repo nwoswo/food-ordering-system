@@ -22,10 +22,23 @@ spring:
     username: postgres
     password: admin
     driver-class-name: org.postgresql.Driver
-    platform: postgres
-    schema: classpath:init-schema.sql
-    data: classpath:init-data.sql
-    initialization-mode: always
+
+  kafka:
+    bootstrap-servers: localhost:19092, localhost:29092, localhost:39092
+    topic:
+      payment-request: payment-request
+      payment-response: payment-response
+    consumer:
+      group-id: payment-service-consumer
+
+  ##Flyway
+  flyway:
+    enabled: true
+    locations: classpath:bd
+    baseline-on-migrate: true
+    schemas: payment
+    default-schema: payment
+    create-schemas: true
 
 kafka-config:
   bootstrap-servers: localhost:19092, localhost:29092, localhost:39092

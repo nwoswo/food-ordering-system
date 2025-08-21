@@ -19,12 +19,12 @@ public class OrderRejectedKafkaMessagePublisher implements OrderRejectedMessageP
     private final RestaurantMessagingDataMapper restaurantMessagingDataMapper;
     private final KafkaProducer<String, RestaurantApprovalResponseModel> kafkaProducer;
     private final RestaurantServiceConfigData restaurantServiceConfigData;
-    private final KafkaMessageHelper<String, RestaurantApprovalResponseModel> kafkaMessageHelper;
+    private final KafkaMessageHelper kafkaMessageHelper;
 
-    public OrderRejectedKafkaMessagePublisher(RestaurantMessagingDataMapper restaurantMessagingDataMapper,
-                                              KafkaProducer<String, RestaurantApprovalResponseModel> kafkaProducer,
-                                              RestaurantServiceConfigData restaurantServiceConfigData,
-                                              KafkaMessageHelper<String, RestaurantApprovalResponseModel> kafkaMessageHelper) {
+        public OrderRejectedKafkaMessagePublisher(RestaurantMessagingDataMapper restaurantMessagingDataMapper,
+                                               KafkaProducer<String, RestaurantApprovalResponseModel> kafkaProducer,
+                                               RestaurantServiceConfigData restaurantServiceConfigData,
+                                               KafkaMessageHelper kafkaMessageHelper) {
         this.restaurantMessagingDataMapper = restaurantMessagingDataMapper;
         this.kafkaProducer = kafkaProducer;
         this.restaurantServiceConfigData = restaurantServiceConfigData;
@@ -45,7 +45,10 @@ public class OrderRejectedKafkaMessagePublisher implements OrderRejectedMessageP
             kafkaProducer.send(restaurantServiceConfigData.getRestaurantApprovalResponseTopicName(),
                     orderId,
                     restaurantApprovalResponseModel,
-                    kafkaMessageHelper);
+                    kafkaMessageHelper.getKafkaCallback(restaurantServiceConfigData.getRestaurantApprovalResponseTopicName(),
+                            restaurantApprovalResponseModel,
+                            orderId,
+                            "RestaurantApprovalResponseModel"));
 
             log.info("RestaurantApprovalResponseModel sent to kafka at: {}", System.nanoTime());
         } catch (Exception e) {

@@ -2,7 +2,6 @@ package com.food.ordering.system.kafka.producer.config;
 
 import com.food.ordering.system.kafka.producer.KafkaMessageHelper;
 import com.food.ordering.system.kafka.producer.KafkaProducer;
-import com.food.ordering.system.kafka.producer.service.KafkaMessageHelperImpl;
 import com.food.ordering.system.kafka.producer.service.KafkaProducerImpl;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -27,7 +26,8 @@ public class KafkaProducerConfig {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.springframework.kafka.support.serializer.JsonSerializer");
+        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+                "org.springframework.kafka.support.serializer.JsonSerializer");
         configProps.put(ProducerConfig.ACKS_CONFIG, "all");
         configProps.put(ProducerConfig.RETRIES_CONFIG, 3);
         configProps.put(ProducerConfig.LINGER_MS_CONFIG, 1);
@@ -41,12 +41,8 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaMessageHelper<String, Object> kafkaMessageHelper() {
-        return new KafkaMessageHelperImpl<>();
+    public KafkaProducer<String, Object> kafkaProducer(KafkaMessageHelper kafkaMessageHelper) {
+        return new KafkaProducerImpl<>(kafkaTemplate(), kafkaMessageHelper);
     }
 
-    @Bean
-    public KafkaProducer<String, Object> kafkaProducer() {
-        return new KafkaProducerImpl<>(kafkaTemplate(), kafkaMessageHelper());
-    }
 }

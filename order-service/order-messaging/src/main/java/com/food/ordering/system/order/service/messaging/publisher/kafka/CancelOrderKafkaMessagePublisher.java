@@ -20,12 +20,12 @@ public class CancelOrderKafkaMessagePublisher implements OrderCancelledPaymentRe
     private final OrderMessagingDataMapper orderMessagingDataMapper;
     private final OrderServiceConfigData orderServiceConfigData;
     private final KafkaProducer<String, PaymentRequestModel> kafkaProducer;
-    private final KafkaMessageHelper<String, PaymentRequestModel> orderKafkaMessageHelper;
+    private final KafkaMessageHelper orderKafkaMessageHelper;
 
     public CancelOrderKafkaMessagePublisher(OrderMessagingDataMapper orderMessagingDataMapper,
                                             OrderServiceConfigData orderServiceConfigData,
                                             KafkaProducer<String, PaymentRequestModel> kafkaProducer,
-                                            KafkaMessageHelper<String, PaymentRequestModel> orderKafkaMessageHelper) {
+                                            KafkaMessageHelper orderKafkaMessageHelper) {
         this.orderMessagingDataMapper = orderMessagingDataMapper;
         this.orderServiceConfigData = orderServiceConfigData;
         this.kafkaProducer = kafkaProducer;
@@ -44,7 +44,10 @@ public class CancelOrderKafkaMessagePublisher implements OrderCancelledPaymentRe
             kafkaProducer.send(orderServiceConfigData.getPaymentRequestTopicName(),
                     orderId,
                     paymentRequestModel,
-                    orderKafkaMessageHelper);
+                    orderKafkaMessageHelper.getKafkaCallback(orderServiceConfigData.getPaymentResponseTopicName(),
+                            paymentRequestModel,
+                            orderId,
+                            "PaymentRequestModel"));
 
             log.info("PaymentRequestModel sent to Kafka for order id: {}", paymentRequestModel.getOrderId());
         } catch (Exception e) {

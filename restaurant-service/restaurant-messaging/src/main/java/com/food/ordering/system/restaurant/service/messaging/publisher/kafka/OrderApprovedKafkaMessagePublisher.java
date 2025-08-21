@@ -19,12 +19,12 @@ public class OrderApprovedKafkaMessagePublisher implements OrderApprovedMessageP
     private final RestaurantMessagingDataMapper restaurantMessagingDataMapper;
     private final KafkaProducer<String, RestaurantApprovalResponseModel> kafkaProducer;
     private final RestaurantServiceConfigData restaurantServiceConfigData;
-    private final KafkaMessageHelper<String, RestaurantApprovalResponseModel> kafkaMessageHelper;
+    private final KafkaMessageHelper kafkaMessageHelper;
 
     public OrderApprovedKafkaMessagePublisher(RestaurantMessagingDataMapper restaurantMessagingDataMapper,
                                               KafkaProducer<String, RestaurantApprovalResponseModel> kafkaProducer,
                                               RestaurantServiceConfigData restaurantServiceConfigData,
-                                              KafkaMessageHelper<String, RestaurantApprovalResponseModel> kafkaMessageHelper) {
+                                              KafkaMessageHelper kafkaMessageHelper) {
         this.restaurantMessagingDataMapper = restaurantMessagingDataMapper;
         this.kafkaProducer = kafkaProducer;
         this.restaurantServiceConfigData = restaurantServiceConfigData;
@@ -45,7 +45,10 @@ public class OrderApprovedKafkaMessagePublisher implements OrderApprovedMessageP
             kafkaProducer.send(restaurantServiceConfigData.getRestaurantApprovalResponseTopicName(),
                     orderId,
                     restaurantApprovalResponseModel,
-                    kafkaMessageHelper);
+                    kafkaMessageHelper.getKafkaCallback(restaurantServiceConfigData.getRestaurantApprovalResponseTopicName(),
+                            restaurantApprovalResponseModel,
+                            orderId,
+                            "RestaurantApprovalResponseModel"));
 
             log.info("RestaurantApprovalResponseModel sent to kafka at: {}", System.nanoTime());
         } catch (Exception e) {

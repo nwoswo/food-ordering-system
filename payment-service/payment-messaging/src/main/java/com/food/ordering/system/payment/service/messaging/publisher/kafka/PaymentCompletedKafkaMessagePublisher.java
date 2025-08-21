@@ -1,15 +1,16 @@
 package com.food.ordering.system.payment.service.messaging.publisher.kafka;
 
-import com.food.ordering.system.kafka.stream.model.PaymentResponseModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
 import com.food.ordering.system.kafka.producer.KafkaMessageHelper;
 import com.food.ordering.system.kafka.producer.KafkaProducer;
+import com.food.ordering.system.kafka.stream.model.PaymentResponseModel;
 import com.food.ordering.system.payment.service.domain.config.PaymentServiceConfigData;
 import com.food.ordering.system.payment.service.domain.event.PaymentCompletedEvent;
 import com.food.ordering.system.payment.service.domain.ports.output.message.publisher.PaymentCompletedMessagePublisher;
 import com.food.ordering.system.payment.service.messaging.mapper.PaymentMessagingDataMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 @Component
 public class PaymentCompletedKafkaMessagePublisher implements PaymentCompletedMessagePublisher {
@@ -19,12 +20,12 @@ public class PaymentCompletedKafkaMessagePublisher implements PaymentCompletedMe
     private final PaymentMessagingDataMapper paymentMessagingDataMapper;
     private final KafkaProducer<String, PaymentResponseModel> kafkaProducer;
     private final PaymentServiceConfigData paymentServiceConfigData;
-    private final KafkaMessageHelper<String, PaymentResponseModel> kafkaMessageHelper;
+    private final KafkaMessageHelper kafkaMessageHelper;
 
     public PaymentCompletedKafkaMessagePublisher(PaymentMessagingDataMapper paymentMessagingDataMapper,
-                                                 KafkaProducer<String, PaymentResponseModel> kafkaProducer,
-                                                 PaymentServiceConfigData paymentServiceConfigData,
-                                                 KafkaMessageHelper<String, PaymentResponseModel> kafkaMessageHelper) {
+            KafkaProducer<String, PaymentResponseModel> kafkaProducer,
+            PaymentServiceConfigData paymentServiceConfigData,
+            KafkaMessageHelper kafkaMessageHelper) {
         this.paymentMessagingDataMapper = paymentMessagingDataMapper;
         this.kafkaProducer = kafkaProducer;
         this.paymentServiceConfigData = paymentServiceConfigData;
@@ -38,13 +39,16 @@ public class PaymentCompletedKafkaMessagePublisher implements PaymentCompletedMe
         log.info("Received PaymentCompletedEvent for order id: {}", orderId);
 
         try {
-            PaymentResponseModel paymentResponseModel =
-                    paymentMessagingDataMapper.paymentCompletedEventToPaymentResponseModel(domainEvent);
+            PaymentResponseModel paymentResponseModel = paymentMessagingDataMapper
+                    .paymentCompletedEventToPaymentResponseModel(domainEvent);
 
             kafkaProducer.send(paymentServiceConfigData.getPaymentResponseTopicName(),
                     orderId,
                     paymentResponseModel,
-                    kafkaMessageHelper);
+                    kafkaMessageHelper.getKafkaCallback(paymentServiceConfigData.getPaymentResponseTopicName(),
+                            paymentResponseModel,
+                            orderId,
+                            "PaymentResponseModel"));
 
             log.info("PaymentResponseModel sent to kafka for order id: {}", orderId);
         } catch (Exception e) {

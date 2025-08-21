@@ -21,12 +21,12 @@ public class PaymentFailedKafkaMessagePublisher implements PaymentFailedMessageP
     private final PaymentMessagingDataMapper paymentMessagingDataMapper;
     private final KafkaProducer<String, PaymentResponseModel> kafkaProducer;
     private final PaymentServiceConfigData paymentServiceConfigData;
-    private final KafkaMessageHelper<String, PaymentResponseModel> kafkaMessageHelper;
+    private final KafkaMessageHelper kafkaMessageHelper;
 
     public PaymentFailedKafkaMessagePublisher(PaymentMessagingDataMapper paymentMessagingDataMapper,
                                               KafkaProducer<String, PaymentResponseModel> kafkaProducer,
                                               PaymentServiceConfigData paymentServiceConfigData,
-                                              KafkaMessageHelper<String, PaymentResponseModel> kafkaMessageHelper) {
+                                              KafkaMessageHelper kafkaMessageHelper) {
         this.paymentMessagingDataMapper = paymentMessagingDataMapper;
         this.kafkaProducer = kafkaProducer;
         this.paymentServiceConfigData = paymentServiceConfigData;
@@ -46,7 +46,10 @@ public class PaymentFailedKafkaMessagePublisher implements PaymentFailedMessageP
             kafkaProducer.send(paymentServiceConfigData.getPaymentResponseTopicName(),
                     orderId,
                     paymentResponseModel,
-                    kafkaMessageHelper);
+                    kafkaMessageHelper.getKafkaCallback(paymentServiceConfigData.getPaymentResponseTopicName(),
+                            paymentResponseModel,
+                            orderId,
+                            "PaymentResponseModel"));
 
             log.info("PaymentResponseModel sent to kafka for order id: {}", orderId);
         } catch (Exception e) {

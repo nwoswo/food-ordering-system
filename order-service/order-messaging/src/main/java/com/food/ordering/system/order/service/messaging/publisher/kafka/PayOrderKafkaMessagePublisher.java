@@ -19,16 +19,16 @@ public class PayOrderKafkaMessagePublisher implements OrderPaidRestaurantRequest
     private final OrderMessagingDataMapper orderMessagingDataMapper;
     private final OrderServiceConfigData orderServiceConfigData;
     private final KafkaProducer<String, RestaurantApprovalRequestModel> kafkaProducer;
-        private final KafkaMessageHelper<String, RestaurantApprovalRequestModel> orderKafkaMessageHelper;
+    private final KafkaMessageHelper kafkaMessageHelper;
 
     public PayOrderKafkaMessagePublisher(OrderMessagingDataMapper orderMessagingDataMapper,
                                           OrderServiceConfigData orderServiceConfigData,
                                           KafkaProducer<String, RestaurantApprovalRequestModel> kafkaProducer,
-                                          KafkaMessageHelper<String, RestaurantApprovalRequestModel> orderKafkaMessageHelper) {
+                                          KafkaMessageHelper kafkaMessageHelper) {
         this.orderMessagingDataMapper = orderMessagingDataMapper;
         this.orderServiceConfigData = orderServiceConfigData;
         this.kafkaProducer = kafkaProducer;
-        this.orderKafkaMessageHelper = orderKafkaMessageHelper;
+        this.kafkaMessageHelper = kafkaMessageHelper;
     }
 
     @Override
@@ -42,7 +42,10 @@ public class PayOrderKafkaMessagePublisher implements OrderPaidRestaurantRequest
             kafkaProducer.send(orderServiceConfigData.getRestaurantApprovalRequestTopicName(),
                     orderId,
                     restaurantApprovalRequestModel,
-                    orderKafkaMessageHelper);
+                    kafkaMessageHelper.getKafkaCallback(orderServiceConfigData.getRestaurantApprovalResponseTopicName(),
+                            restaurantApprovalRequestModel,
+                            orderId,
+                            "RestaurantApprovalRequestModel"));
 
             log.info("RestaurantApprovalRequestModel sent to kafka for order id: {}", orderId);
         } catch (Exception e) {
