@@ -36,8 +36,8 @@ public class PaymentResponseKafkaListener implements KafkaStreamConsumer<Payment
 
     @KafkaListener(id = "${kafka-consumer-config.payment-consumer-group-id}", topics = "${order-service.payment-response-topic-name}")
     public void receive(@Payload List<PaymentResponseModel> messages,
-                        @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) List<String> keys,
-                        @Header(KafkaHeaders.RECEIVED_PARTITION_ID) List<Integer> partitions,
+                        @Header(KafkaHeaders.KEY) List<String> keys,
+                        @Header(KafkaHeaders.PARTITION) List<Integer> partitions,
                         @Header(KafkaHeaders.OFFSET) List<Long> offsets) {
         log.info("{} number of payment responses received with keys:{}, partitions:{} and offsets: {}",
                 messages.size(),

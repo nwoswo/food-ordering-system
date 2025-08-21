@@ -27,18 +27,10 @@ public class KafkaMessageHelper {
         }
     }
 
-    public <V> org.springframework.util.concurrent.ListenableFutureCallback<SendResult<String, V>> 
-    getKafkaCallback(String responseTopicName, V messageModel, String orderId, String modelName) {
-        return new org.springframework.util.concurrent.ListenableFutureCallback<SendResult<String, V>>() {
-            @Override
-            public void onSuccess(SendResult<String, V> result) {
-                handleKafkaCallback(result, null, responseTopicName, messageModel, orderId, modelName);
-            }
-
-            @Override
-            public void onFailure(Throwable ex) {
-                handleKafkaCallback(null, ex, responseTopicName, messageModel, orderId, modelName);
-            }
-        };
+    public <V> void attachKafkaCallback(CompletableFuture<SendResult<String, V>> future,
+                                        String responseTopicName, V messageModel, String orderId, String modelName) {
+        future.whenComplete((result, ex) -> {
+            handleKafkaCallback(result, ex, responseTopicName, messageModel, orderId, modelName);
+        });
     }
 }

@@ -40,8 +40,8 @@ public class RestaurantApprovalResponseKafkaListener implements KafkaStreamConsu
     @KafkaListener(id = "${kafka-consumer-config.restaurant-approval-consumer-group-id}",
                 topics = "${order-service.restaurant-approval-response-topic-name}")
     public void receive(@Payload List<RestaurantApprovalResponseModel> messages,
-                        @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) List<String> keys,
-                        @Header(KafkaHeaders.RECEIVED_PARTITION_ID) List<Integer> partitions,
+                        @Header(KafkaHeaders.KEY) List<String> keys,
+                        @Header(KafkaHeaders.PARTITION) List<Integer> partitions,
                         @Header(KafkaHeaders.OFFSET) List<Long> offsets) {
         log.info("{} number of restaurant approval responses received with keys {}, partitions {} and offsets {}",
                 messages.size(),

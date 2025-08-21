@@ -45,10 +45,7 @@ public class OrderRejectedKafkaMessagePublisher implements OrderRejectedMessageP
             kafkaProducer.send(restaurantServiceConfigData.getRestaurantApprovalResponseTopicName(),
                     orderId,
                     restaurantApprovalResponseModel,
-                    kafkaMessageHelper.getKafkaCallback(restaurantServiceConfigData.getRestaurantApprovalResponseTopicName(),
-                            restaurantApprovalResponseModel,
-                            orderId,
-                            "RestaurantApprovalResponseModel"));
+                    kafkaMessageHelper);
 
             log.info("RestaurantApprovalResponseModel sent to kafka at: {}", System.nanoTime());
         } catch (Exception e) {

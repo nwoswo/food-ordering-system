@@ -44,10 +44,7 @@ public class CreateOrderKafkaMessagePublisher implements OrderCreatedPaymentRequ
             kafkaProducer.send(orderServiceConfigData.getPaymentRequestTopicName(),
                     orderId,
                     paymentRequestModel,
-                    kafkaMessageHelper.getKafkaCallback(orderServiceConfigData.getPaymentResponseTopicName(),
-                            paymentRequestModel,
-                            orderId,
-                            "PaymentRequestModel"));
+                    kafkaMessageHelper);
 
             log.info("PaymentRequestModel sent to Kafka for order id: {}", paymentRequestModel.getOrderId());
         } catch (Exception e) {

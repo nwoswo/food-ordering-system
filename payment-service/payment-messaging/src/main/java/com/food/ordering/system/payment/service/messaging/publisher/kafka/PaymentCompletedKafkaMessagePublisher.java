@@ -45,10 +45,7 @@ public class PaymentCompletedKafkaMessagePublisher implements PaymentCompletedMe
             kafkaProducer.send(paymentServiceConfigData.getPaymentResponseTopicName(),
                     orderId,
                     paymentResponseModel,
-                    kafkaMessageHelper.getKafkaCallback(paymentServiceConfigData.getPaymentResponseTopicName(),
-                            paymentResponseModel,
-                            orderId,
-                            "PaymentResponseModel"));
+                    kafkaMessageHelper);
 
             log.info("PaymentResponseModel sent to kafka for order id: {}", orderId);
         } catch (Exception e) {

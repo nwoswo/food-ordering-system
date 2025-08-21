@@ -42,10 +42,7 @@ public class PayOrderKafkaMessagePublisher implements OrderPaidRestaurantRequest
             kafkaProducer.send(orderServiceConfigData.getRestaurantApprovalRequestTopicName(),
                     orderId,
                     restaurantApprovalRequestModel,
-                    kafkaMessageHelper.getKafkaCallback(orderServiceConfigData.getRestaurantApprovalResponseTopicName(),
-                            restaurantApprovalRequestModel,
-                            orderId,
-                            "RestaurantApprovalRequestModel"));
+                    kafkaMessageHelper);
 
             log.info("RestaurantApprovalRequestModel sent to kafka for order id: {}", orderId);
         } catch (Exception e) {
