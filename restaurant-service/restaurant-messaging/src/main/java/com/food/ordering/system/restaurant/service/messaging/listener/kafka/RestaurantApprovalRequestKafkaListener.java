@@ -18,41 +18,41 @@ import com.food.ordering.system.restaurant.service.messaging.mapper.RestaurantMe
 @Component
 public class RestaurantApprovalRequestKafkaListener implements KafkaStreamConsumer<RestaurantApprovalRequestModel> {
 
-    private static final Logger log = LoggerFactory.getLogger(RestaurantApprovalRequestKafkaListener.class);
+  private static final Logger log = LoggerFactory.getLogger(RestaurantApprovalRequestKafkaListener.class);
 
-    private final RestaurantApprovalRequestMessageListener restaurantApprovalRequestMessageListener;
-    private final RestaurantMessagingDataMapper restaurantMessagingDataMapper;
+  private final RestaurantApprovalRequestMessageListener restaurantApprovalRequestMessageListener;
+  private final RestaurantMessagingDataMapper restaurantMessagingDataMapper;
 
-    public RestaurantApprovalRequestKafkaListener(
-            RestaurantApprovalRequestMessageListener restaurantApprovalRequestMessageListener,
-            RestaurantMessagingDataMapper restaurantMessagingDataMapper) {
-        this.restaurantApprovalRequestMessageListener = restaurantApprovalRequestMessageListener;
-        this.restaurantMessagingDataMapper = restaurantMessagingDataMapper;
-    }
+  public RestaurantApprovalRequestKafkaListener(
+      RestaurantApprovalRequestMessageListener restaurantApprovalRequestMessageListener,
+      RestaurantMessagingDataMapper restaurantMessagingDataMapper) {
+    this.restaurantApprovalRequestMessageListener = restaurantApprovalRequestMessageListener;
+    this.restaurantMessagingDataMapper = restaurantMessagingDataMapper;
+  }
 
-    @Override
-    public void receive(List<RestaurantApprovalRequestModel> messages) {
-        // This method is required by the interface but not used
-        // The actual processing is done by the @KafkaListener method
-    }
+  @Override
+  public void receive(List<RestaurantApprovalRequestModel> messages) {
+    // This method is required by the interface but not used
+    // The actual processing is done by the @KafkaListener method
+  }
 
-    @KafkaListener(id = "${kafka-consumer-config.restaurant-approval-consumer-group-id}", topics = "${restaurant-service.restaurant-approval-request-topic-name}")
-    public void receive(@Payload List<RestaurantApprovalRequestModel> messages,
-                                    @Header(value = KafkaHeaders.KEY, required = false) List<String> keys,
-                        @Header(value = KafkaHeaders.PARTITION, required = false) List<Integer> partitions,
-            @Header(value = KafkaHeaders.OFFSET, required = false) List<Long> offsets) {
-        log.info("{} number of orders approval requests received with keys {}, partitions {} and offsets {}" +
-                ", sending for restaurant approval",
-                messages.size(),
-                keys != null ? keys.toString() : "null",
-                partitions != null ? partitions.toString() : "null",
-                offsets != null ? offsets.toString() : "null");
+  @KafkaListener(id = "${kafka-consumer-config.restaurant-approval-consumer-group-id}", topics = "${restaurant-service.restaurant-approval-request-topic-name}")
+  public void receive(@Payload List<RestaurantApprovalRequestModel> messages,
+      @Header(value = KafkaHeaders.KEY, required = false) List<String> keys,
+      @Header(value = KafkaHeaders.PARTITION, required = false) List<Integer> partitions,
+      @Header(value = KafkaHeaders.OFFSET, required = false) List<Long> offsets) {
+    log.info("{} number of orders approval requests received with keys {}, partitions {} and offsets {}" +
+        ", sending for restaurant approval",
+        messages.size(),
+        keys != null ? keys.toString() : "null",
+        partitions != null ? partitions.toString() : "null",
+        offsets != null ? offsets.toString() : "null");
 
-        messages.forEach(restaurantApprovalRequestModel -> {
-            log.info("Processing order approval for order id: {}", restaurantApprovalRequestModel.getOrderId());
-            restaurantApprovalRequestMessageListener.approveOrder(restaurantMessagingDataMapper
-                    .restaurantApprovalRequestModelToRestaurantApproval(restaurantApprovalRequestModel));
-        });
-    }
+    messages.forEach(restaurantApprovalRequestModel -> {
+      log.info("Processing order approval for order id: {}", restaurantApprovalRequestModel.getOrderId());
+      restaurantApprovalRequestMessageListener.approveOrder(restaurantMessagingDataMapper
+          .restaurantApprovalRequestModelToRestaurantApproval(restaurantApprovalRequestModel));
+    });
+  }
 
 }
