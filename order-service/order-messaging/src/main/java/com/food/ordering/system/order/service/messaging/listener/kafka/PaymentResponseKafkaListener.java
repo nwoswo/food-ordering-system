@@ -34,7 +34,9 @@ public class PaymentResponseKafkaListener implements KafkaStreamConsumer<Payment
         // The actual processing is done by the @KafkaListener method below
     }
 
-    @KafkaListener(id = "${kafka-consumer-config.payment-consumer-group-id}", topics = "${order-service.payment-response-topic-name}")
+    @KafkaListener(id = "${kafka-consumer-config.payment-consumer-group-id}", 
+                   topics = "${order-service.payment-response-topic-name}",
+                   containerFactory = "paymentResponseKafkaListenerContainerFactory")
     public void receive(@Payload List<PaymentResponseModel> messages,
                         @Header(value = KafkaHeaders.KEY, required = false) List<String> keys,
                         @Header(value = KafkaHeaders.PARTITION, required = false) List<Integer> partitions,

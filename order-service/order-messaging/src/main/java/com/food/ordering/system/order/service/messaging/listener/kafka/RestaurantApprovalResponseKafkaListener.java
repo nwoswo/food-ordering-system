@@ -37,7 +37,9 @@ public class RestaurantApprovalResponseKafkaListener implements KafkaStreamConsu
     // The actual processing is done by the @KafkaListener method below
   }
 
-  @KafkaListener(id = "${kafka-consumer-config.restaurant-approval-consumer-group-id}", topics = "${order-service.restaurant-approval-response-topic-name}")
+  @KafkaListener(id = "${kafka-consumer-config.restaurant-approval-consumer-group-id}", 
+                 topics = "${order-service.restaurant-approval-response-topic-name}",
+                 containerFactory = "restaurantApprovalResponseKafkaListenerContainerFactory")
   public void receive(@Payload List<RestaurantApprovalResponseModel> messages,
       @Header(value = KafkaHeaders.KEY, required = false) List<String> keys,
       @Header(value = KafkaHeaders.PARTITION, required = false) List<Integer> partitions,
